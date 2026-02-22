@@ -1,0 +1,3 @@
+John | Biryani, Soda,  | Rs815.25
+Alice | Pasta, Salad,  | Rs765.00
+Bob | Burger, Soda,  | Rs462.00
