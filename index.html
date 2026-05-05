@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍽️ Restaurant Management System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Login Section -->
+        <div id="loginSection" class="section active">
+            <div class="login-container">
+                <h1>🍽️ Restaurant Manager</h1>
+                <p style="color: #666; margin-bottom: 20px;">Welcome to our Restaurant Management System</p>
+                
+                <div class="login-form">
+                    <div class="form-group">
+                        <label for="role">Select Role:</label>
+                        <select id="role" required>
+                            <option value="">-- Choose Role --</option>
+                            <option value="user">👤 User</option>
+                            <option value="admin">🔐 Admin</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" placeholder="Enter username" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" placeholder="Enter password" required>
+                    </div>
+
+                    <button class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 1.1em;" onclick="handleLogin()">Login</button>
+                </div>
+
+                <div class="credentials-info">
+                    <strong>📌 Demo Credentials:</strong><br><br>
+                    <strong>User:</strong><br>
+                    Username: <code>any</code><br>
+                    Password: <code>any</code><br><br>
+                    <strong>Admin:</strong><br>
+                    Username: <code>admin</code><br>
+                    Password: <code>1234</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Section -->
+        <div id="userSection" class="section">
+            <div class="dashboard">
+                <div class="header">
+                    <h1>👤 User Dashboard</h1>
+                    <div class="user-info">
+                        <span>Welcome, <strong id="userGreeting"></strong>!</span>
+                        <button class="btn btn-secondary" onclick="handleLogout()">Logout</button>
+                    </div>
+                </div>
+
+                <!-- User Tabs -->
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="toggleSection('reservationSection', 'orderSection'), displayMenu()">🪑 Make Order</button>
+                    <button class="tab-btn" onclick="toggleSection('orderSection', 'reservationSection'), displayTables()">📍 Reserve Table</button>
+                    <button class="tab-btn" onclick="toggleSection('orderSection', 'feedbackSection')">💬 Feedback</button>
+                </div>
+
+                <!-- Reservation Section -->
+                <div id="reservationSection" class="content-section">
+                    <h2>📍 Reserve a Table</h2>
+                    <p style="color: #666; margin-bottom: 20px;">Select an available table to make a reservation:</p>
+                    <div id="tablesDisplay" class="tables-grid"></div>
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button class="btn btn-primary" onclick="showReservationModal()">Reserve Now</button>
+                    </div>
+                </div>
+
+                <!-- Order Section -->
+                <div id="orderSection" class="content-section active">
+                    <h2>🍽️ Browse Menu & Place Order</h2>
+                    <div id="menuGrid" class="menu-grid"></div>
+
+                    <div class="bill-section">
+                        <h3>📊 Order Summary</h3>
+                        <div id="orderItems" class="order-items-display"></div>
+                        <div class="bill-item">
+                            <span>Subtotal:</span>
+                            <span>Rs<span id="subtotal">0.00</span></span>
+                        </div>
+                        <div class="bill-item">
+                            <span>Tax (5%):</span>
+                            <span>Rs<span id="tax">0.00</span></span>
+                        </div>
+                        <div class="bill-item">
+                            <span>Service Charge (10%):</span>
+                            <span>Rs<span id="service">0.00</span></span>
+                        </div>
+                        <div class="bill-item total">
+                            <span>Total Amount:</span>
+                            <span>Rs<span id="total">0.00</span></span>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%; margin-top: 20px; padding: 12px;" onclick="submitOrder()">Place Order</button>
+                    </div>
+                </div>
+
+                <!-- Feedback Section -->
+                <div id="feedbackSection" class="content-section">
+                    <h2>💬 Share Your Feedback</h2>
+                    <p style="color: #666; margin-bottom: 20px;">Tell us about your experience at our restaurant:</p>
+                    <div class="form-group">
+                        <textarea id="feedbackText" class="feedback-textarea" placeholder="Enter your feedback here..." maxlength="500"></textarea>
+                        <div class="char-count"><span id="charCount">0</span>/500</div>
+                    </div>
+                    <button class="btn btn-primary" style="width: 100%;" onclick="submitFeedback()">Submit Feedback</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Section -->
+        <div id="adminSection" class="section">
+            <div class="dashboard">
+                <div class="header">
+                    <h1>🔐 Admin Dashboard</h1>
+                    <div class="user-info">
+                        <span>Welcome, <strong>Admin</strong>!</span>
+                        <button class="btn btn-secondary" onclick="handleLogout()">Logout</button>
+                    </div>
+                </div>
+
+                <!-- Admin Tabs -->
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="showAdminMenu('menu')">📋 Menu</button>
+                    <button class="tab-btn" onclick="showAdminMenu('tables')">📍 Reservations</button>
+                    <button class="tab-btn" onclick="showAdminMenu('orders')">📦 Orders</button>
+                    <button class="tab-btn" onclick="showAdminMenu('feedback')">💬 Feedback</button>
+                </div>
+
+                <!-- Admin Content -->
+                <div id="adminContent" class="content-section active">
+                    <p>Select an option above to view information.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reservation Modal -->
+    <div id="reservationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeReservationModal()">&times;</span>
+            <h2>🪑 Select a Table</h2>
+            <p style="color: #666; margin-bottom: 20px;">Choose an available table for your reservation:</p>
+            <div id="reservationOptions" class="tables-grid"></div>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="closeReservationModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="confirmReservation()">Confirm Reservation</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal success-modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeSuccessModal()">&times;</span>
+            <h2>✅ Success!</h2>
+            <p id="successMessage"></p>
+            <div class="modal-buttons">
+                <button class="btn btn-primary" style="flex: 1;" onclick="closeSuccessModal()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div id="errorModal" class="modal error-modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeErrorModal()">&times;</span>
+            <h2>❌ Error!</h2>
+            <p id="errorMessage"></p>
+            <div class="modal-buttons">
+                <button class="btn btn-primary" style="flex: 1;" onclick="closeErrorModal()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
